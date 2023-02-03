@@ -135,12 +135,7 @@ public class FollowingFragment extends Fragment implements GetFollowingPresenter
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // TODO: move this and put it in GetFollowingPresenter
-                    GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
-                            userAlias.getText().toString(), new UserService.GetUserHandler());
-                    ExecutorService executor = Executors.newSingleThreadExecutor();
-                    executor.execute(getUserTask);
-                    //
+                    presenter.executeUserTask(userAlias.getText().toString());
                     Toast.makeText(getContext(), "Getting user's profile...", Toast.LENGTH_LONG).show();
                 }
             });

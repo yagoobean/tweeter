@@ -1,8 +1,13 @@
 package edu.byu.cs.tweeter.client.presenter;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
+import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class GetFollowingPresenter {
@@ -53,6 +58,13 @@ public class GetFollowingPresenter {
             view.setLoadingFooter(isLoading);
             followService.loadMoreItems(user, PAGE_SIZE, lastFollowee, new GetFollowingObserver());
         }
+    }
+
+    public void executeUserTask(String userAlias) {
+        GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
+                userAlias, new UserService.GetUserHandler());
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(getUserTask);
     }
 
     public class GetFollowingObserver implements FollowService.Observer {

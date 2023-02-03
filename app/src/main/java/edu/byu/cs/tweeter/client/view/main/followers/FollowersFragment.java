@@ -32,6 +32,8 @@ import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowersTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.client.cache.Cache;
+import edu.byu.cs.tweeter.client.presenter.GetFollowersPresenter;
+import edu.byu.cs.tweeter.client.presenter.GetFollowingPresenter;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -54,6 +56,7 @@ public class FollowersFragment extends Fragment {
     private User user;
 
     private FollowersRecyclerViewAdapter followersRecyclerViewAdapter;
+    private GetFollowersPresenter presenter;
 
     /**
      * Creates an instance of the fragment and places the target user in an arguments
@@ -117,10 +120,7 @@ public class FollowersFragment extends Fragment {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
-                            userAlias.getText().toString(), new UserService.GetUserHandler());
-                    ExecutorService executor = Executors.newSingleThreadExecutor();
-                    executor.execute(getUserTask);
+                    presenter.executeUserTask(userAlias.getText().toString());
                     Toast.makeText(getContext(), "Getting user's profile...", Toast.LENGTH_LONG).show();
                 }
             });
@@ -158,6 +158,7 @@ public class FollowersFragment extends Fragment {
         /**
          * Creates an instance and loads the first page of following data.
          */
+        // TODO remove
         FollowersRecyclerViewAdapter() {
             loadMoreItems();
         }

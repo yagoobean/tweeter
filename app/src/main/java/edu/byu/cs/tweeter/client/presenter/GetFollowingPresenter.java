@@ -84,7 +84,7 @@ public class GetFollowingPresenter {
         }
 
         @Override
-        public void addFollowees(List<User> followees, boolean hasMorePages) {
+        public void addItems(List<User> followees, boolean hasMorePages) {
             lastFollowee = (followees.size() > 0) ? followees.get(followees.size() - 1) : null;
             setHasMorePages(hasMorePages);
 

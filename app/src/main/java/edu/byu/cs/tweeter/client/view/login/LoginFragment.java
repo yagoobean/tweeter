@@ -20,8 +20,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import edu.byu.cs.tweeter.R;
-import edu.byu.cs.tweeter.client.backgroundTask.LoginTask;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.LoginTask;
 import edu.byu.cs.tweeter.client.cache.Cache;
+import edu.byu.cs.tweeter.client.presenter.LoginPresenter;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -29,13 +30,14 @@ import edu.byu.cs.tweeter.model.domain.User;
 /**
  * Implements the login screen.
  */
-public class LoginFragment extends Fragment {
+public class LoginFragment extends Fragment implements LoginPresenter.View {
     private static final String LOG_TAG = "LoginFragment";
 
     private Toast loginToast;
     private EditText alias;
     private EditText password;
     private TextView errorView;
+    private LoginPresenter presenter = new LoginPresenter(this);
 
     /**
      * Creates an instance of the fragment and places the user and auth token in an arguments
@@ -61,76 +63,36 @@ public class LoginFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-                // Login and move to MainActivity.
-                try {
-                    validateLogin();
-                    errorView.setText(null);
+                errorView.setText(null);
+                presenter.initiateLogin(alias.getText().toString(), password.getText().toString());
 
-                    loginToast = Toast.makeText(getContext(), "Logging In...", Toast.LENGTH_LONG);
-                    loginToast.show();
-
-                    // Send the login request.
-                    LoginTask loginTask = new LoginTask(alias.getText().toString(),
-                            password.getText().toString(),
-                            new LoginHandler());
-                    ExecutorService executor = Executors.newSingleThreadExecutor();
-                    executor.execute(loginTask);
-                } catch (Exception e) {
-                    errorView.setText(e.getMessage());
-                }
             }
         });
 
         return view;
     }
 
-    public void validateLogin() {
-        if (alias.getText().length() > 0 && alias.getText().charAt(0) != '@') {
-            throw new IllegalArgumentException("Alias must begin with @.");
-        }
-        if (alias.getText().length() < 2) {
-            throw new IllegalArgumentException("Alias must contain 1 or more characters after the @.");
-        }
-        if (password.getText().length() == 0) {
-            throw new IllegalArgumentException("Password cannot be empty.");
-        }
+    @Override
+    public void displayInfoMessage(String message) {
+        loginToast = Toast.makeText(getContext(), message, Toast.LENGTH_LONG);
+        loginToast.show();
     }
 
-    /**
-     * Message handler (i.e., observer) for LoginTask
-     */
-    private class LoginHandler extends Handler {
+    @Override
+    public void displayErrorMessage(String message) {
+        errorView.setText(message);
+    }
 
-        public LoginHandler() {
-            super(Looper.getMainLooper());
-        }
+    @Override
+    public void loginSuccessful(User user, AuthToken authToken) {
+        Intent intent = new Intent(getContext(), MainActivity.class);
+        intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
 
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            boolean success = msg.getData().getBoolean(LoginTask.SUCCESS_KEY);
-            if (success) {
-                User loggedInUser = (User) msg.getData().getSerializable(LoginTask.USER_KEY);
-                AuthToken authToken = (AuthToken) msg.getData().getSerializable(LoginTask.AUTH_TOKEN_KEY);
+        loginToast.cancel();
 
-                // Cache user session information
-                Cache.getInstance().setCurrUser(loggedInUser);
-                Cache.getInstance().setCurrUserAuthToken(authToken);
-
-                Intent intent = new Intent(getContext(), MainActivity.class);
-                intent.putExtra(MainActivity.CURRENT_USER_KEY, loggedInUser);
-
-                loginToast.cancel();
-
-                Toast.makeText(getContext(), "Hello " + Cache.getInstance().getCurrUser().getName(), Toast.LENGTH_LONG).show();
-                startActivity(intent);
-            } else if (msg.getData().containsKey(LoginTask.MESSAGE_KEY)) {
-                String message = msg.getData().getString(LoginTask.MESSAGE_KEY);
-                Toast.makeText(getContext(), "Failed to login: " + message, Toast.LENGTH_LONG).show();
-            } else if (msg.getData().containsKey(LoginTask.EXCEPTION_KEY)) {
-                Exception ex = (Exception) msg.getData().getSerializable(LoginTask.EXCEPTION_KEY);
-                Toast.makeText(getContext(), "Failed to login because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        }
+        Toast.makeText(getContext(), "Hello " + Cache.getInstance().getCurrUser().getName(),
+                Toast.LENGTH_LONG).show();
+        startActivity(intent);
     }
 
 }

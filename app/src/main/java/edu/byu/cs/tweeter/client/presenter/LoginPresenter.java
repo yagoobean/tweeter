@@ -4,32 +4,18 @@ import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class LoginPresenter implements UserService.LoginObserver {
-    private View view;
-
-    public LoginPresenter(View view) {
-        this.view = view;
-    }
-
-    @Override
-    public void handleSuccess(User user, AuthToken authToken) {
-        view.loginSuccessful(user, authToken);
-    }
-
-    @Override
-    public void handleFailure(String message) {
-        view.displayInfoMessage(message);
-    }
-
-    @Override
-    public void handleException(Exception exception) {
-        view.displayInfoMessage(exception.getMessage());   // TODO
-    }
+public class LoginPresenter implements UserService.Observer {
 
     public interface View {
         public void displayInfoMessage(String message);
         public void displayErrorMessage(String message);
         public void loginSuccessful(User user, AuthToken authToken);
+    }
+
+    private View view;
+
+    public LoginPresenter(View view) {
+        this.view = view;
     }
 
     public void initiateLogin(String alias, String password) {
@@ -57,5 +43,20 @@ public class LoginPresenter implements UserService.LoginObserver {
             return "Password cannot be empty.";
         }
         return null;
+    }
+
+    @Override
+    public void handleSuccess(User user, AuthToken authToken) {
+        view.loginSuccessful(user, authToken);
+    }
+
+    @Override
+    public void handleFailure(String message) {
+        view.displayInfoMessage(message);
+    }
+
+    @Override
+    public void handleException(Exception exception) {
+        view.displayInfoMessage("Failed to login because of exception: " + exception.getMessage());   // TODO
     }
 }

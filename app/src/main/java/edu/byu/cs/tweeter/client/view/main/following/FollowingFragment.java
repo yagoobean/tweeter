@@ -65,7 +65,6 @@ public class FollowingFragment extends Fragment implements GetFollowingPresenter
         View view = inflater.inflate(R.layout.fragment_following, container, false);
 
         user = (User) getArguments().getSerializable(USER_KEY); // global
-        // no authtoken
         presenter = new GetFollowingPresenter(this);
 
         RecyclerView followingRecyclerView = view.findViewById(R.id.followingRecyclerView);
@@ -87,8 +86,7 @@ public class FollowingFragment extends Fragment implements GetFollowingPresenter
     public void setLoadingFooter(boolean value) {
         if(value) {
             followingRecyclerViewAdapter.addLoadingFooter();
-        }
-        else {
+        } else {
             followingRecyclerViewAdapter.removeLoadingFooter();
         }
     }

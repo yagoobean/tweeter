@@ -13,31 +13,30 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class GetFeedPresenter {
+public class GetStoryPresenter {
     public interface View {
         void setLoadingFooter(boolean value);
         void displayMessage(String message);
         void addMoreItems(List<Status> statuses);
-
     }
 
     private static final int PAGE_SIZE = 10;
-    private final View view;
+    private View view;  // TODO does this need to be final?
     private StatusService statusService;
     private Status lastStatus;
     private boolean hasMorePages;
     private boolean isLoading = false;
 
-    public GetFeedPresenter(View view) {
+    public GetStoryPresenter(View view) {
         this.view = view;
         this.statusService = new StatusService();
     }
 
     public void loadMoreItems(User user) {
-        if (!isLoading) {
+        if (!isLoading) {   // This guard is important for avoiding a race condition in the scrolling code.
             isLoading = true;
             view.setLoadingFooter(isLoading);
-            statusService.loadMoreFeeds(user, PAGE_SIZE, lastStatus, new GetFeedObserver());
+            statusService.loadMoreStories(user, PAGE_SIZE, lastStatus, new GetStoryObserver());
         }
     }
 
@@ -46,7 +45,6 @@ public class GetFeedPresenter {
                 userAlias, new UserService.GetUserHandler());
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(getUserTask);
-
     }
 
     // GETTERS AND SETTERS
@@ -69,7 +67,7 @@ public class GetFeedPresenter {
 
     //
 
-    public class GetFeedObserver implements StatusService.Observer {
+    public class GetStoryObserver implements StatusService.Observer {
 
         @Override
         public void displayError(String message) {
@@ -82,7 +80,8 @@ public class GetFeedPresenter {
         public void displayException(Exception ex) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
-            view.displayMessage("Failed to get feed because of exception: " + ex.getMessage());
+            view.displayMessage("Failed to get story because of exception: " + ex.getMessage());
+
         }
 
         @Override

@@ -94,7 +94,7 @@ public class FeedFragment extends Fragment implements GetFeedPresenter.View {
 
         feedRecyclerView.addOnScrollListener(new FeedRecyclerViewPaginationScrollListener(layoutManager));
 
-        presenter.loadMoreItems(user);  // todo nothing in this function yet
+        presenter.loadMoreItems(user);
 
         return view;
     }
@@ -311,7 +311,8 @@ public class FeedFragment extends Fragment implements GetFeedPresenter.View {
          * Causes the Adapter to display a loading footer and make a request to get more feed
          * data.
          */
-        void loadMoreItems() { presenter.loadMoreItems(user);
+        void loadMoreItems() {
+            presenter.loadMoreItems(user);
         }
 
         /**

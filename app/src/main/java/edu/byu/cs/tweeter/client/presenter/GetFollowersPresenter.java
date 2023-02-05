@@ -20,12 +20,13 @@ public class GetFollowersPresenter {
         void addMoreItems(List<User> followers);
 
     }
-    private boolean isLoading = false;
 
+    private boolean isLoading = false;
     private View view;
     private User lastFollower;
     private FollowService followService;
     private boolean hasMorePages;
+
     public GetFollowersPresenter(View view) {
         this.view = view;
         this.followService = new FollowService();
@@ -74,10 +75,10 @@ public class GetFollowersPresenter {
         }
 
         @Override
-        public void displayException(Exception ex) {
+        public void displayException(Exception ex, String header) {
             isLoading = false;
             view.setLoadingFooter(false);
-            view.displayMessage("Failed to get followers because of exception: " + ex.getMessage());
+            view.displayMessage(header + ex.getMessage());
         }
 
         @Override
@@ -88,6 +89,26 @@ public class GetFollowersPresenter {
             isLoading = false;
             view.setLoadingFooter(false);
             view.addMoreItems(followers);
+        }
+
+        @Override
+        public void updateFollowersCount(int count) {
+            // don't need
+        }
+
+        @Override
+        public void updateFollowingCount(int count) {
+            // don't need
+        }
+
+        @Override
+        public void setFollowers(boolean isFollower) {
+            // don't need
+        }
+
+        @Override
+        public void updateFollowButton(boolean val) {
+            // don't need
         }
     }
 }

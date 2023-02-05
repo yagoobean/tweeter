@@ -15,8 +15,10 @@ import java.util.concurrent.Executors;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.LoginTask;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.LogoutTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.RegisterTask;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.LoginHandler;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.LogoutHandler;
 import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -31,11 +33,18 @@ public class UserService {
         void handleException(Exception exception);
 
     }
+
     public void login(String alias, String password, Observer observer) {
         LoginTask loginTask = new LoginTask(alias, password, new LoginHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(loginTask);
 
+    }
+
+    public void logout(Observer observer) {
+        LogoutTask logoutTask = new LogoutTask(Cache.getInstance().getCurrUserAuthToken(), new LogoutHandler(observer));
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(logoutTask);
     }
 
     public void register(String firstName, String lastName, String alias, String password, String imageBytesBase64, Observer observer) {
@@ -48,10 +57,13 @@ public class UserService {
     /**
      * Message handler (i.e., observer) for GetUserTask.
      */
+    // TODO
     public static class GetUserHandler extends Handler {
+        // private Observer observer;
 
         public GetUserHandler() {
             super(Looper.getMainLooper());
+            // this.observer = observer;
         }
 
         @Override
@@ -63,12 +75,15 @@ public class UserService {
                 Intent intent = new Intent(fragment.getContext(), MainActivity.class);
                 intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
                 fragment.startActivity(intent);
+                // TODO
             } else if (msg.getData().containsKey(GetUserTask.MESSAGE_KEY)) {
                 String message = msg.getData().getString(GetUserTask.MESSAGE_KEY);
                 Toast.makeText(fragment.getContext(), "Failed to get user's profile: " + message, Toast.LENGTH_LONG).show();
+                // TODO
             } else if (msg.getData().containsKey(GetUserTask.EXCEPTION_KEY)) {
                 Exception ex = (Exception) msg.getData().getSerializable(GetUserTask.EXCEPTION_KEY);
                 Toast.makeText(fragment.getContext(), "Failed to get user's profile because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+                // TODO
             }
         }
     }

@@ -77,10 +77,10 @@ public class GetFollowingPresenter {
         }
 
         @Override
-        public void displayException(Exception ex) {
+        public void displayException(Exception ex, String header) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
-            view.displayMessage("Failed to get following because of exception: " + ex.getMessage());
+            view.displayMessage(header + ex.getMessage());
         }
 
         @Override
@@ -91,6 +91,26 @@ public class GetFollowingPresenter {
             isLoading = false;
             view.setLoadingFooter(isLoading);
             view.addMoreItems(followees);
+        }
+
+        @Override
+        public void updateFollowersCount(int count) {
+            // not needed
+        }
+
+        @Override
+        public void updateFollowingCount(int count) {
+            // not needed
+        }
+
+        @Override
+        public void setFollowers(boolean isFollower) {
+            // not needed
+        }
+
+        @Override
+        public void updateFollowButton(boolean val) {
+            // not needed
         }
     }
 

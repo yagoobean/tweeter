@@ -91,5 +91,10 @@ public class GetStoryPresenter {
             view.setLoadingFooter(isLoading);
             view.addMoreItems(statuses);
         }
+
+        @Override
+        public void postStatus() {
+            // not needed
+        }
     }
 }

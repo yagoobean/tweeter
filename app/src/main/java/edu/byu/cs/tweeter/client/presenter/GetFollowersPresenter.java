@@ -35,7 +35,7 @@ public class GetFollowersPresenter {
         if (!isLoading) {   // This guard is important for avoiding a race condition in the scrolling code.
             isLoading = true;
             view.setLoadingFooter(isLoading);
-            followService.loadMoreItems(user, PAGE_SIZE, lastFollower, new GetFollowersObserver());
+            followService.loadMoreFollowers(user, PAGE_SIZE, lastFollower, new GetFollowersObserver());
         }
     }
 

@@ -56,7 +56,7 @@ public class GetFollowingPresenter {
         if (!isLoading) {
             isLoading = true;
             view.setLoadingFooter(isLoading);
-            followService.loadMoreItems(user, PAGE_SIZE, lastFollowee, new GetFollowingObserver());
+            followService.loadMoreFollowees(user, PAGE_SIZE, lastFollowee, new GetFollowingObserver());
         }
     }
 

@@ -27,11 +27,18 @@ public class FollowService {
 
     }
 
-    public void loadMoreItems(User user, int pageSize, User lastFollowee, Observer observer) {
+    public void loadMoreFollowees(User user, int pageSize, User lastFollowee, Observer observer) {
         GetFollowingTask getFollowingTask = new GetFollowingTask(Cache.getInstance().getCurrUserAuthToken(),
                 user, pageSize, lastFollowee, new GetFollowingHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(getFollowingTask);
+    }
+
+    public void loadMoreFollowers(User user, int pageSize, User lastFollowee, Observer observer) {
+        GetFollowersTask getFollowersTask = new GetFollowersTask(Cache.getInstance().getCurrUserAuthToken(),
+                user, pageSize, lastFollowee, new GetFollowersHandler(observer));
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(getFollowersTask);
     }
 
     private class GetFollowingHandler extends Handler {

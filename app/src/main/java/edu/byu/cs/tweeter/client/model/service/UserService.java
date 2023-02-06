@@ -29,11 +29,11 @@ public class UserService {
     public interface Observer {
 
         void handleSuccess(User user, AuthToken authToken);
+
         void handleFailure(String message); // to explain failure
         void handleException(Exception exception);
 
     }
-
     public void login(String alias, String password, Observer observer) {
         LoginTask loginTask = new LoginTask(alias, password, new LoginHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -54,16 +54,23 @@ public class UserService {
         executor.execute(registerTask);
     }
 
+    public void executeUserTask(String userAlias, Observer observer) {
+        GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
+                userAlias, new UserService.GetUserHandler(observer));
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(getUserTask);
+    }
+
     /**
      * Message handler (i.e., observer) for GetUserTask.
      */
-    // TODO
     public static class GetUserHandler extends Handler {
-        // private Observer observer;
 
-        public GetUserHandler() {
+        private Observer observer;
+
+        public GetUserHandler(Observer observer) {
             super(Looper.getMainLooper());
-            // this.observer = observer;
+            this.observer = observer;
         }
 
         @Override
@@ -71,19 +78,13 @@ public class UserService {
             boolean success = msg.getData().getBoolean(GetUserTask.SUCCESS_KEY);
             if (success) {
                 User user = (User) msg.getData().getSerializable(GetUserTask.USER_KEY);
-
-                Intent intent = new Intent(fragment.getContext(), MainActivity.class);
-                intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
-                fragment.startActivity(intent);
-                // TODO
+                observer.handleSuccess(user, null); 
             } else if (msg.getData().containsKey(GetUserTask.MESSAGE_KEY)) {
                 String message = msg.getData().getString(GetUserTask.MESSAGE_KEY);
-                Toast.makeText(fragment.getContext(), "Failed to get user's profile: " + message, Toast.LENGTH_LONG).show();
-                // TODO
+                observer.handleFailure("Failed to get user's profile: " + message);
             } else if (msg.getData().containsKey(GetUserTask.EXCEPTION_KEY)) {
                 Exception ex = (Exception) msg.getData().getSerializable(GetUserTask.EXCEPTION_KEY);
-                Toast.makeText(fragment.getContext(), "Failed to get user's profile because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-                // TODO
+                observer.handleException(ex);
             }
         }
     }

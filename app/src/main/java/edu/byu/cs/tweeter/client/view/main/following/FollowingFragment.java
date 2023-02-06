@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.client.view.main.following;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.client.presenter.GetFollowingPresenter;
+import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.User;
 
 /**
@@ -99,6 +101,13 @@ public class FollowingFragment extends Fragment implements GetFollowingPresenter
     @Override
     public void addMoreItems(List<User> followees) {
         followingRecyclerViewAdapter.addItems(followees);
+    }
+
+    @Override
+    public void getUser(User user) {
+        Intent intent = new Intent(getContext(), MainActivity.class);
+        intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
+        startActivity(intent);
     }
 
     /**

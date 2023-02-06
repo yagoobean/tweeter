@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.client.presenter;
 
+import java.text.ParseException;
 import java.util.List;
 
 import edu.byu.cs.tweeter.client.model.service.FollowService;
@@ -48,8 +49,8 @@ public class MainActivityPresenter {
         followService.executeUnfollowTask(selectedUser, new FollowObserver());
     }
 
-    public void executeStatusTask(String post, String dateTime) {
-        statusService.executeStatusTask(post, dateTime, new StatusObserver());
+    public void executeStatusTask(String post) throws ParseException {
+        statusService.executeStatusTask(post, new StatusObserver());
     }
 
     public void logOut() {
@@ -60,19 +61,17 @@ public class MainActivityPresenter {
 
         @Override
         public void displayError(String message) {
-            // TODO footer stuff?
             view.displayMessage(message);
         }
 
         @Override
         public void displayException(Exception ex, String header) {
-            // todo footer stuff?
             view.displayMessage(header + ex.getMessage());
         }
 
         @Override
         public void addItems(List<User> items, boolean hasMorePages) {
-            // todo
+            // don't think I need this
         }
 
         @Override

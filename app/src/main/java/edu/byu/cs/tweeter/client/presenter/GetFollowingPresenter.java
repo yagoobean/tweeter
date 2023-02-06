@@ -1,13 +1,10 @@
 package edu.byu.cs.tweeter.client.presenter;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetUserTask;
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class GetFollowingPresenter {
@@ -19,6 +16,7 @@ public class GetFollowingPresenter {
         void displayMessage(String message);
 
         void addMoreItems(List<User> followees);
+        void getUser(User user);
     }
     private FollowService followService;
 
@@ -28,8 +26,8 @@ public class GetFollowingPresenter {
 
     private User lastFollowee;
 
-    private User user; // maybe add authtoken
     private View view;
+    private UserService userService;
 
     public boolean hasMorePages() {
         return hasMorePages;
@@ -50,6 +48,7 @@ public class GetFollowingPresenter {
     public GetFollowingPresenter(View view) {
         this.view = view;
         this.followService = new FollowService();
+        this.userService = new UserService();
     }
 
     public void loadMoreItems(User user) {
@@ -61,10 +60,7 @@ public class GetFollowingPresenter {
     }
 
     public void executeUserTask(String userAlias) {
-        GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
-                userAlias, new UserService.GetUserHandler());
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getUserTask);
+        userService.executeUserTask(userAlias, new GetUserObserver());
     }
 
     public class GetFollowingObserver implements FollowService.Observer {
@@ -114,4 +110,21 @@ public class GetFollowingPresenter {
         }
     }
 
+    private class GetUserObserver implements UserService.Observer {
+
+        @Override
+        public void handleSuccess(User user, AuthToken authToken) {
+            view.getUser(user);
+        }
+
+        @Override
+        public void handleFailure(String message) {
+            view.displayMessage(message);
+        }
+
+        @Override
+        public void handleException(Exception exception) {
+            view.displayMessage("Failed to get user's profile because of exception: " + exception.getMessage());
+        }
+    }
 }

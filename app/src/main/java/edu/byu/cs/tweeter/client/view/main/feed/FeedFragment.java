@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.client.view.main.feed;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -31,6 +32,7 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.client.presenter.GetFeedPresenter;
+import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -110,6 +112,13 @@ public class FeedFragment extends Fragment implements GetFeedPresenter.View {
         feedRecyclerViewAdapter.addItems(statuses);
     }
 
+    @Override
+    public void getUser(User user) {
+        Intent intent = new Intent(getContext(), MainActivity.class);
+        intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
+        startActivity(intent);
+    }
+
     /**
      * The ViewHolder for the RecyclerView that displays the feed data.
      */
@@ -183,7 +192,6 @@ public class FeedFragment extends Fragment implements GetFeedPresenter.View {
                 }, startIndex, (startIndex + mention.length()), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
 
-            // todo: does this need to be taken out?
             for (String url : status.getUrls()) {
                 int startIndex = status.getPost().indexOf(url);
                 spannableString.setSpan(new URLSpan(url), startIndex, (startIndex + url.length()), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

@@ -117,7 +117,7 @@ public class FollowService {
             }
 
             // followButton.setEnabled(true);
-            observer.updateFollowButton(true);
+            // observer.updateFollowButton(true);
         }
     }
 
@@ -300,8 +300,6 @@ public class FollowService {
                 observer.displayException(ex, "Failed to unfollow because of exception: ");
             }
 
-            // followButton.setEnabled(true);
-            observer.updateFollowButton(true);
         }
     }
 }

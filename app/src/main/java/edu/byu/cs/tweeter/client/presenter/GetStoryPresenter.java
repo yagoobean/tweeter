@@ -1,13 +1,10 @@
 package edu.byu.cs.tweeter.client.presenter;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetUserTask;
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -16,18 +13,21 @@ public class GetStoryPresenter {
         void setLoadingFooter(boolean value);
         void displayMessage(String message);
         void addMoreItems(List<Status> statuses);
+        void getUser(User user);
     }
 
     private static final int PAGE_SIZE = 10;
-    private View view;  // TODO does this need to be final?
+    private View view;
     private StatusService statusService;
     private Status lastStatus;
     private boolean hasMorePages;
     private boolean isLoading = false;
+    private UserService userService;
 
     public GetStoryPresenter(View view) {
         this.view = view;
         this.statusService = new StatusService();
+        this.userService = new UserService();
     }
 
     public void loadMoreItems(User user) {
@@ -39,10 +39,7 @@ public class GetStoryPresenter {
     }
 
     public void executeUserTask(String userAlias) {
-        GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
-                userAlias, new UserService.GetUserHandler());
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getUserTask);
+        userService.executeUserTask(userAlias, new GetUserObserver());
     }
 
     // GETTERS AND SETTERS
@@ -95,6 +92,24 @@ public class GetStoryPresenter {
         @Override
         public void postStatus() {
             // not needed
+        }
+    }
+
+    private class GetUserObserver implements UserService.Observer {
+
+        @Override
+        public void handleSuccess(User user, AuthToken authToken) {
+            view.getUser(user);
+        }
+
+        @Override
+        public void handleFailure(String message) {
+            view.displayMessage(message);
+        }
+
+        @Override
+        public void handleException(Exception exception) {
+            view.displayMessage("Failed to get user's profile because of exception: " + exception.getMessage());
         }
     }
 }

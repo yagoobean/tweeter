@@ -6,6 +6,10 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -41,12 +45,20 @@ public class StatusService {
         executor.execute(getStoryTask);
     }
 
-    public void executeStatusTask(String post, String dateTime, Observer observer) {
+    public void executeStatusTask(String post, Observer observer) throws ParseException {
+        String dateTime = getFormattedDateTime();
         Status newStatus = new Status(post, Cache.getInstance().getCurrUser(), dateTime, parseURLs(post), parseMentions(post));
         PostStatusTask statusTask = new PostStatusTask(Cache.getInstance().getCurrUserAuthToken(),
                 newStatus, new PostStatusHandler(observer));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(statusTask);
+    }
+
+    public String getFormattedDateTime() throws ParseException {
+        SimpleDateFormat userFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat statusFormat = new SimpleDateFormat("MMM d yyyy h:mm aaa");
+
+        return statusFormat.format(userFormat.parse(LocalDate.now().toString() + " " + LocalTime.now().toString().substring(0, 8)));
     }
 
     public List<String> parseURLs(String post) {

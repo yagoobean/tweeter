@@ -1,5 +1,6 @@
 package edu.byu.cs.tweeter.client.view.main.followers;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -25,6 +26,7 @@ import java.util.List;
 
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.client.presenter.GetFollowersPresenter;
+import edu.byu.cs.tweeter.client.view.main.MainActivity;
 import edu.byu.cs.tweeter.model.domain.User;
 
 /**
@@ -103,6 +105,13 @@ public class FollowersFragment extends Fragment implements GetFollowersPresenter
     @Override
     public void addMoreItems(List<User> followers) {
         followersRecyclerViewAdapter.addItems(followers);
+    }
+
+    @Override
+    public void getUser(User user) {
+        Intent intent = new Intent(getContext(), MainActivity.class);
+        intent.putExtra(MainActivity.CURRENT_USER_KEY, user);
+        startActivity(intent);
     }
 
     /**

@@ -1,13 +1,10 @@
 package edu.byu.cs.tweeter.client.presenter;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
-import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetUserTask;
+import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class GetFollowersPresenter {
@@ -18,6 +15,7 @@ public class GetFollowersPresenter {
         void setLoadingFooter(boolean val);
         void displayMessage(String message);
         void addMoreItems(List<User> followers);
+        void getUser(User user);
 
     }
 
@@ -26,10 +24,12 @@ public class GetFollowersPresenter {
     private User lastFollower;
     private FollowService followService;
     private boolean hasMorePages;
+    private UserService userService;
 
     public GetFollowersPresenter(View view) {
         this.view = view;
         this.followService = new FollowService();
+        this.userService = new UserService();
     }
 
     public void loadMoreItems(User user) {
@@ -41,10 +41,7 @@ public class GetFollowersPresenter {
     }
 
     public void executeUserTask(String userAlias) {
-        GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
-                userAlias, new UserService.GetUserHandler());
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getUserTask);
+        userService.executeUserTask(userAlias, new GetUserObserver());
     }
 
 
@@ -109,6 +106,24 @@ public class GetFollowersPresenter {
         @Override
         public void updateFollowButton(boolean val) {
             // don't need
+        }
+    }
+
+    private class GetUserObserver implements UserService.Observer {
+
+        @Override
+        public void handleSuccess(User user, AuthToken authToken) {
+            view.getUser(user);
+        }
+
+        @Override
+        public void handleFailure(String message) {
+            view.displayMessage(message);
+        }
+
+        @Override
+        public void handleException(Exception exception) {
+            view.displayMessage("Failed to get user's profile because of exception: " + exception.getMessage());
         }
     }
 }

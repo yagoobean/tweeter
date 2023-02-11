@@ -78,7 +78,7 @@ public class UserService {
             boolean success = msg.getData().getBoolean(GetUserTask.SUCCESS_KEY);
             if (success) {
                 User user = (User) msg.getData().getSerializable(GetUserTask.USER_KEY);
-                observer.handleSuccess(user, null); 
+                observer.handleSuccess(user, null);
             } else if (msg.getData().containsKey(GetUserTask.MESSAGE_KEY)) {
                 String message = msg.getData().getString(GetUserTask.MESSAGE_KEY);
                 observer.handleFailure("Failed to get user's profile: " + message);

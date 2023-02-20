@@ -25,7 +25,7 @@ public class GetFollowersHandler extends Handler {
 
         boolean success = msg.getData().getBoolean(GetFollowersTask.SUCCESS_KEY);
         if (success) {
-            List<User> followers = (List<User>) msg.getData().getSerializable(GetFollowersTask.FOLLOWERS_KEY);
+            List<User> followers = (List<User>) msg.getData().getSerializable(PagedTask.ITEMS_KEY);
 
             boolean hasMorePages = msg.getData().getBoolean(GetFollowersTask.MORE_PAGES_KEY);
             observer.addItems(followers, hasMorePages);

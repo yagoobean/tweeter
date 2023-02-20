@@ -51,10 +51,11 @@ public abstract class BackgroundTask implements Runnable {
     public void run() {
         try {
             processTask();
+
             sendSuccessMessage();
 
         } catch (Exception ex) {
-            Log.e(LOG_TAG, "Failed to get followees", ex);
+            Log.e(LOG_TAG, ex.getMessage(), ex);
             sendExceptionMessage(ex);
         }
     }

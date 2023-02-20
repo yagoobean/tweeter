@@ -47,6 +47,13 @@ public abstract class BackgroundTask implements Runnable {
         sendMessage(msgBundle);
     }
 
+    @NonNull
+    private Bundle createBundle(boolean value) {
+        Bundle msgBundle = new Bundle();
+        msgBundle.putBoolean(SUCCESS_KEY, value);
+        return msgBundle;
+    }
+
     @Override
     public void run() {
         try {
@@ -63,13 +70,6 @@ public abstract class BackgroundTask implements Runnable {
     protected abstract void processTask();
 
     protected abstract void loadSuccessBundle(Bundle msgBundle);
-
-    @NonNull
-    private Bundle createBundle(boolean value) {
-        Bundle msgBundle = new Bundle();
-        msgBundle.putBoolean(SUCCESS_KEY, value);
-        return msgBundle;
-    }
 
     private void sendMessage(Bundle msgBundle) {
         Message msg = Message.obtain();

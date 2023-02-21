@@ -117,12 +117,12 @@ public class GetFollowersPresenter {
         }
 
         @Override
-        public void handleFailure(String message) {
+        public void displayError(String message) {
             view.displayMessage(message);
         }
 
         @Override
-        public void handleException(Exception exception) {
+        public void displayException(Exception exception) {
             view.displayMessage("Failed to get user's profile because of exception: " + exception.getMessage());
         }
     }

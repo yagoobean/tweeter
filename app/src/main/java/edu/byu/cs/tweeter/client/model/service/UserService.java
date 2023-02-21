@@ -18,12 +18,12 @@ import edu.byu.cs.tweeter.model.domain.User;
 public class UserService {
     // private static Fragment fragment;
 
-    public interface Observer {
+    public interface Observer extends BackgroundObserver {
 
         void handleSuccess(User user, AuthToken authToken);
 
-        void handleFailure(String message); // to explain failure
-        void handleException(Exception exception);
+        void displayError(String message); // to explain failure
+        void displayException(Exception exception);
 
     }
     public void login(String alias, String password, Observer observer) {

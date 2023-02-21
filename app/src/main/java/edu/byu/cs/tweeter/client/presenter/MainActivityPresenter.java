@@ -103,12 +103,12 @@ public class MainActivityPresenter {
         }
 
         @Override
-        public void handleFailure(String message) {
+        public void displayError(String message) {
             view.displayMessage(message);
         }
 
         @Override
-        public void handleException(Exception ex) {
+        public void displayException(Exception ex) {
             view.displayMessage("Failed to logout because of exception: " + ex.getMessage());
         }
     }

@@ -7,11 +7,11 @@ import edu.byu.cs.tweeter.model.domain.User;
 public class LoginPresenter implements UserService.Observer {
 
     public interface View {
+
         public void displayInfoMessage(String message);
         public void displayErrorMessage(String message);
         public void loginSuccessful(User user, AuthToken authToken);
     }
-
     private View view;
 
     public LoginPresenter(View view) {
@@ -51,12 +51,12 @@ public class LoginPresenter implements UserService.Observer {
     }
 
     @Override
-    public void handleFailure(String message) {
+    public void displayError(String message) {
         view.displayInfoMessage(message);
     }
 
     @Override
-    public void handleException(Exception exception) {
+    public void displayException(Exception exception) {
         view.displayInfoMessage("Failed to login because of exception: " + exception.getMessage());   // TODO
     }
 }

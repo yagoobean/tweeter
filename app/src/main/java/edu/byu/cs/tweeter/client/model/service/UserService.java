@@ -22,8 +22,6 @@ public class UserService extends BackgroundService {
 
         void handleSuccess(User user, AuthToken authToken);
 
-        void displayError(String message); // to explain failure
-        void displayException(Exception exception);
 
     }
     public void login(String alias, String password, Observer observer) {

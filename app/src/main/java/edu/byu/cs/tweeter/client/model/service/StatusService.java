@@ -21,8 +21,6 @@ import edu.byu.cs.tweeter.model.domain.User;
 
 public class StatusService extends BackgroundService {
     public interface Observer extends BackgroundObserver{
-        void displayError(String message);
-        void displayException(Exception ex);
         void addItems(List<Status> items, boolean hasMorePages);
         void postStatus();
     }

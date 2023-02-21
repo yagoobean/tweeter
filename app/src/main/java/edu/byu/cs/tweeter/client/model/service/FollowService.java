@@ -28,13 +28,9 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.UnfollowHa
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class FollowService extends BackgroundService {
+    static final String TASK_KEY = "follow/unfollow";   // fixme
 
     public interface Observer extends BackgroundObserver {
-        static final String TASK_KEY = "follow/unfollow";   // fixme
-
-        void displayError(String message);
-
-        void displayException(Exception ex);
 
         void addItems(List<User> items, boolean hasMorePages);
 

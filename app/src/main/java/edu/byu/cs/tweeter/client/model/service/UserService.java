@@ -15,7 +15,7 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.RegisterHa
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class UserService {
+public class UserService extends BackgroundService {
     // private static Fragment fragment;
 
     public interface Observer extends BackgroundObserver {
@@ -28,15 +28,13 @@ public class UserService {
     }
     public void login(String alias, String password, Observer observer) {
         LoginTask loginTask = new LoginTask(alias, password, new LoginHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(loginTask);
+        runExecutor(loginTask);
 
     }
 
     public void logout(Observer observer) {
         LogoutTask logoutTask = new LogoutTask(Cache.getInstance().getCurrUserAuthToken(), new LogoutHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(logoutTask);
+        runExecutor(logoutTask);
     }
 
     public void register(String firstName, String lastName, String alias, String password,
@@ -44,15 +42,13 @@ public class UserService {
         // Send register request.
         RegisterTask registerTask = new RegisterTask(firstName, lastName, alias, password,
                 imageBytesBase64, new RegisterHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(registerTask);
+        runExecutor(registerTask);
     }
 
     public void executeUserTask(String userAlias, Observer observer) {
         GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
                 userAlias, new GetUserHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getUserTask);
+        runExecutor(getUserTask);
     }
 
 }

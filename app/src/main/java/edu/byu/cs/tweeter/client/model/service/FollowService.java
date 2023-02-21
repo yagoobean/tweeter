@@ -27,7 +27,7 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.IsFollower
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.UnfollowHandler;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class FollowService {
+public class FollowService extends BackgroundService {
 
     public interface Observer extends BackgroundObserver {
         static final String TASK_KEY = "follow/unfollow";   // fixme
@@ -49,15 +49,13 @@ public class FollowService {
     public void loadMoreFollowees(User user, int pageSize, User lastFollowee, Observer observer) {
         GetFollowingTask getFollowingTask = new GetFollowingTask(Cache.getInstance().getCurrUserAuthToken(),
                 user, pageSize, lastFollowee, new GetFollowingHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getFollowingTask);
+        runExecutor(getFollowingTask);
     }
 
     public void loadMoreFollowers(User user, int pageSize, User lastFollowee, Observer observer) {
         GetFollowersTask getFollowersTask = new GetFollowersTask(Cache.getInstance().getCurrUserAuthToken(),
                 user, pageSize, lastFollowee, new GetFollowersHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getFollowersTask);
+        runExecutor(getFollowersTask);
     }
 
     public void updateSelectedUserFollowingAndFollowers(User selectedUser, Observer observer) {
@@ -77,22 +75,22 @@ public class FollowService {
     public void executeIsFollowerTask(User selectedUser, Observer observer) {
         IsFollowerTask isFollowerTask = new IsFollowerTask(Cache.getInstance().getCurrUserAuthToken(),
                 Cache.getInstance().getCurrUser(), selectedUser, new IsFollowerHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(isFollowerTask);
+
+        runExecutor(isFollowerTask);
     }
 
     public void executeFollowTask(User selectedUser, Observer observer) {
         FollowTask followTask = new FollowTask(Cache.getInstance().getCurrUserAuthToken(),
                 selectedUser, new FollowHandler(observer, selectedUser));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(followTask);
+
+        runExecutor(followTask);
     }
 
     public void executeUnfollowTask(User selectedUser, Observer observer) {
         UnfollowTask unfollowTask = new UnfollowTask(Cache.getInstance().getCurrUserAuthToken(),
                 selectedUser, new UnfollowHandler(observer, selectedUser));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(unfollowTask);
+
+        runExecutor(unfollowTask);
     }
 
 }

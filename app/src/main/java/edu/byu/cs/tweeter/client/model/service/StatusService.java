@@ -19,7 +19,7 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.PostStatus
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class StatusService {
+public class StatusService extends BackgroundService {
     public interface Observer extends BackgroundObserver{
         void displayError(String message);
         void displayException(Exception ex);
@@ -30,16 +30,14 @@ public class StatusService {
     public void loadMoreFeeds(User user, int pageSize, Status lastStatus, Observer observer) {
         GetFeedTask getFeedTask = new GetFeedTask(Cache.getInstance().getCurrUserAuthToken(),
                 user, pageSize, lastStatus, new GetFeedHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getFeedTask);
+        runExecutor(getFeedTask);
 
     }
 
     public void loadMoreStories(User user, int pageSize, Status lastStatus, Observer observer) {
         GetStoryTask getStoryTask = new GetStoryTask(Cache.getInstance().getCurrUserAuthToken(),
                 user, pageSize, lastStatus, new GetStoryHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(getStoryTask);
+        runExecutor(getStoryTask);
     }
 
     public void executeStatusTask(String post, Observer observer) throws ParseException {
@@ -47,8 +45,7 @@ public class StatusService {
         Status newStatus = new Status(post, Cache.getInstance().getCurrUser(), dateTime, parseURLs(post), parseMentions(post));
         PostStatusTask statusTask = new PostStatusTask(Cache.getInstance().getCurrUserAuthToken(),
                 newStatus, new PostStatusHandler(observer));
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(statusTask);
+        runExecutor(statusTask);
     }
 
     public String getFormattedDateTime() throws ParseException {

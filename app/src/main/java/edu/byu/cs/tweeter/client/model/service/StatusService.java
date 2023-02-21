@@ -20,7 +20,7 @@ import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class StatusService {
-    public interface Observer {
+    public interface Observer extends BackgroundObserver{
         void displayError(String message);
         void displayException(Exception ex);
         void addItems(List<Status> items, boolean hasMorePages);

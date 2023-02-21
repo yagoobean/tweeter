@@ -72,10 +72,10 @@ public class GetFollowersPresenter {
         }
 
         @Override
-        public void displayException(Exception ex, String header) {
+        public void displayException(Exception ex) {
             isLoading = false;
             view.setLoadingFooter(false);
-            view.displayMessage(header + ex.getMessage());
+            view.displayMessage("Failed to get followers because of error: " + ex.getMessage());
         }
 
         @Override

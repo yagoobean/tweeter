@@ -23,9 +23,8 @@ public class LogoutHandler extends Handler {
     public void handleMessage(@NonNull Message msg) {
         boolean success = msg.getData().getBoolean(LogoutTask.SUCCESS_KEY);
         if (success) {
-//            logOutToast.cancel();
-//            logoutUser();
             observer.handleSuccess(null, null); // FIXME IF ISSUES
+
         } else if (msg.getData().containsKey(LogoutTask.MESSAGE_KEY)) {
             String message = msg.getData().getString(LogoutTask.MESSAGE_KEY);
             // Toast.makeText(MainActivity.this, "Failed to logout: " + message, Toast.LENGTH_LONG).show();

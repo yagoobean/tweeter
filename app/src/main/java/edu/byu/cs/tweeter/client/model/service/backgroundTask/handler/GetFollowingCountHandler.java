@@ -31,7 +31,7 @@ public class GetFollowingCountHandler extends Handler {
         } else if (msg.getData().containsKey(GetFollowingCountTask.EXCEPTION_KEY)) {
             Exception ex = (Exception) msg.getData().getSerializable(GetFollowingCountTask.EXCEPTION_KEY);
             // Toast.makeText(MainActivity.this, "Failed to get following count because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-            observer.displayException(ex, "Failed to get following because of exception: ");
+            observer.displayException(ex);
         }
     }
 }

@@ -22,16 +22,13 @@ public class GetFollowersCountHandler extends Handler {
         boolean success = msg.getData().getBoolean(GetFollowersCountTask.SUCCESS_KEY);
         if (success) {
             int count = msg.getData().getInt(GetFollowersCountTask.COUNT_KEY);
-            // followerCount.setText(getString(R.string.followerCount, String.valueOf(count)));
             observer.updateFollowersCount(count);
         } else if (msg.getData().containsKey(GetFollowersCountTask.MESSAGE_KEY)) {
             String message = msg.getData().getString(GetFollowersCountTask.MESSAGE_KEY);
-            // Toast.makeText(MainActivity.this, "Failed to get followers count: " + message, Toast.LENGTH_LONG).show();
             observer.displayError("Failed to get followers count: " + message);
         } else if (msg.getData().containsKey(GetFollowersCountTask.EXCEPTION_KEY)) {
             Exception ex = (Exception) msg.getData().getSerializable(GetFollowersCountTask.EXCEPTION_KEY);
-            // Toast.makeText(MainActivity.this, "Failed to get followers count because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-            observer.displayException(ex, "Failed to get followers count because of exception: ");
+            observer.displayException(ex);  // "Failed to get followers count because of exception: " FIXME!!
         }
     }
 }

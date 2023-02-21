@@ -65,8 +65,8 @@ public class MainActivityPresenter {
         }
 
         @Override
-        public void displayException(Exception ex, String header) {
-            view.displayMessage(header + ex.getMessage());
+        public void displayException(Exception ex) {
+            view.displayMessage(EX_KEY + ex.getMessage());  
         }
 
         @Override
@@ -114,6 +114,7 @@ public class MainActivityPresenter {
     }
 
     private class StatusObserver implements StatusService.Observer {
+        private static final String TASK_KEY = "post status";
 
         @Override
         public void displayError(String message) {
@@ -122,7 +123,7 @@ public class MainActivityPresenter {
 
         @Override
         public void displayException(Exception ex) {
-            view.displayMessage("Failed to post status because of exception: " + ex.getMessage());
+            view.displayMessage("Failed to " + TASK_KEY + " because of exception: " + ex.getMessage());
         }
 
         @Override

@@ -80,10 +80,10 @@ public class GetFeedPresenter {
         }
 
         @Override
-        public void displayException(Exception ex) {
+        public void displayException(Exception ex) {     // fixme
             isLoading = false;
             view.setLoadingFooter(isLoading);
-            view.displayMessage("Failed to get feed because of exception: " + ex.getMessage());
+            view.displayMessage(EX_KEY + ex.getMessage());
         }
 
         @Override

@@ -73,10 +73,10 @@ public class GetFollowingPresenter {
         }
 
         @Override
-        public void displayException(Exception ex, String header) {
+        public void displayException(Exception ex) {
             isLoading = false;
             view.setLoadingFooter(isLoading);
-            view.displayMessage(header + ex.getMessage());
+            view.displayMessage("Failed to get following because of error: " + ex.getMessage());
         }
 
         @Override

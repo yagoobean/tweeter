@@ -9,21 +9,19 @@ import androidx.annotation.NonNull;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class FollowHandler extends BackgroundHandler<FollowService.Observer> {
+public class FollowHandler extends FollowStatusHandler {
     private static final String TASK_KEY = "follow";
 
     private User selectedUser;
     private FollowService followService;
 
     public FollowHandler(FollowService.Observer observer, User selectedUser) {
-        super(observer);
-        this.selectedUser = selectedUser;
-        followService = new FollowService();
+        super(observer, selectedUser);
     }
 
     @Override
     protected void handleSuccess(@NonNull Message msg) {
-        followService.updateSelectedUserFollowingAndFollowers(selectedUser, getObserver());
+        super.handleSuccess(msg);
         getObserver().updateFollowButton(false);
     }
 }

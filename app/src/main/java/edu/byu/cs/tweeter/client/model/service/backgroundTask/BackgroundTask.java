@@ -27,33 +27,6 @@ public abstract class BackgroundTask implements Runnable {
         this.messageHandler = messageHandler;
     }
 
-    private void sendFailedMessage(String message) {
-        Bundle msgBundle = createBundle(false);
-        msgBundle.putString(MESSAGE_KEY, message);
-
-        sendMessage(msgBundle);
-    }
-
-    private void sendExceptionMessage(Exception exception) {
-        Bundle msgBundle = createBundle(false);
-        msgBundle.putSerializable(EXCEPTION_KEY, exception);
-
-        sendMessage(msgBundle);
-    }
-
-    private void sendSuccessMessage() {
-        Bundle msgBundle = createBundle(true);
-        loadSuccessBundle(msgBundle);
-        sendMessage(msgBundle);
-    }
-
-    @NonNull
-    private Bundle createBundle(boolean value) {
-        Bundle msgBundle = new Bundle();
-        msgBundle.putBoolean(SUCCESS_KEY, value);
-        return msgBundle;
-    }
-
     @Override
     public void run() {
         try {
@@ -69,6 +42,19 @@ public abstract class BackgroundTask implements Runnable {
 
     protected abstract void processTask();
 
+    private void sendSuccessMessage() {
+        Bundle msgBundle = createBundle(true);
+        loadSuccessBundle(msgBundle);
+        sendMessage(msgBundle);
+    }
+
+    @NonNull
+    private Bundle createBundle(boolean value) {
+        Bundle msgBundle = new Bundle();
+        msgBundle.putBoolean(SUCCESS_KEY, value);
+        return msgBundle;
+    }
+
     protected abstract void loadSuccessBundle(Bundle msgBundle);
 
     private void sendMessage(Bundle msgBundle) {
@@ -76,6 +62,20 @@ public abstract class BackgroundTask implements Runnable {
         msg.setData(msgBundle);
 
         messageHandler.sendMessage(msg);
+    }
+
+    private void sendFailedMessage(String message) {
+        Bundle msgBundle = createBundle(false);
+        msgBundle.putString(MESSAGE_KEY, message);
+
+        sendMessage(msgBundle);
+    }
+
+    private void sendExceptionMessage(Exception exception) {
+        Bundle msgBundle = createBundle(false);
+        msgBundle.putSerializable(EXCEPTION_KEY, exception);
+
+        sendMessage(msgBundle);
     }
 
     protected FakeData getFakeData() {

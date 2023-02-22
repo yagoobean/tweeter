@@ -4,13 +4,14 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
+import edu.byu.cs.tweeter.client.model.service.AuthenticatedObserver;
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetUserTask;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class GetUserHandler extends BackgroundHandler<UserService.Observer> {
+public class GetUserHandler extends BackgroundHandler<AuthenticatedObserver> {
 
-    public GetUserHandler(UserService.Observer observer) {
+    public GetUserHandler(AuthenticatedObserver observer) {
         super(observer);
     }
 
@@ -18,6 +19,6 @@ public class GetUserHandler extends BackgroundHandler<UserService.Observer> {
     protected void handleSuccess(@NonNull Message msg) {
 
         User user = (User) msg.getData().getSerializable(GetUserTask.USER_KEY);
-        getObserver().handleSuccess(user, null);
+        getObserver().postStatus(user, null);
     }
 }

@@ -1,12 +1,5 @@
 package edu.byu.cs.tweeter.client.model.service;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-
-import androidx.annotation.NonNull;
-
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -30,31 +23,19 @@ import edu.byu.cs.tweeter.model.domain.User;
 public class FollowService extends BackgroundService {
     static final String TASK_KEY = "follow/unfollow";   // fixme
 
-    public interface Observer extends BackgroundObserver {
-
-        void addItems(List<User> items, boolean hasMorePages);
-
-        // maybe move this? Make a separate observer? Idk
-        void updateFollowersCount(int count);
-        void updateFollowingCount(int count);
-        void setFollowers(boolean isFollower);
-        void updateFollowButton(boolean val);
-
-    }
-
-    public void loadMoreFollowees(User user, int pageSize, User lastFollowee, Observer observer) {
+    public void loadMoreFollowees(User user, int pageSize, User lastFollowee, ItemObserver observer) {
         GetFollowingTask getFollowingTask = new GetFollowingTask(Cache.getInstance().getCurrUserAuthToken(),
                 user, pageSize, lastFollowee, new GetFollowingHandler(observer));
         runExecutor(getFollowingTask);
     }
 
-    public void loadMoreFollowers(User user, int pageSize, User lastFollowee, Observer observer) {
+    public void loadMoreFollowers(User user, int pageSize, User lastFollowee, ItemObserver observer) {
         GetFollowersTask getFollowersTask = new GetFollowersTask(Cache.getInstance().getCurrUserAuthToken(),
-                user, pageSize, lastFollowee, new GetFollowersHandler(observer));
+                user, pageSize, lastFollowee, new GetFollowersHandler(observer));   // fixme, use itemObserver instead
         runExecutor(getFollowersTask);
     }
 
-    public void updateSelectedUserFollowingAndFollowers(User selectedUser, Observer observer) {
+    public void updateSelectedUserFollowingAndFollowers(User selectedUser, FollowObserver observer) {
         ExecutorService executor = Executors.newFixedThreadPool(2);
 
         // Get count of most recently selected user's followers.
@@ -68,21 +49,21 @@ public class FollowService extends BackgroundService {
         executor.execute(followingCountTask);
     }
 
-    public void executeIsFollowerTask(User selectedUser, Observer observer) {
+    public void executeIsFollowerTask(User selectedUser, FollowObserver observer) {
         IsFollowerTask isFollowerTask = new IsFollowerTask(Cache.getInstance().getCurrUserAuthToken(),
                 Cache.getInstance().getCurrUser(), selectedUser, new IsFollowerHandler(observer));
 
         runExecutor(isFollowerTask);
     }
 
-    public void executeFollowTask(User selectedUser, Observer observer) {
+    public void executeFollowTask(User selectedUser, FollowObserver observer) {
         FollowTask followTask = new FollowTask(Cache.getInstance().getCurrUserAuthToken(),
                 selectedUser, new FollowHandler(observer, selectedUser));
 
         runExecutor(followTask);
     }
 
-    public void executeUnfollowTask(User selectedUser, Observer observer) {
+    public void executeUnfollowTask(User selectedUser, FollowObserver observer) {
         UnfollowTask unfollowTask = new UnfollowTask(Cache.getInstance().getCurrUserAuthToken(),
                 selectedUser, new UnfollowHandler(observer, selectedUser));
 

@@ -2,7 +2,10 @@ package edu.byu.cs.tweeter.client.presenter;
 
 import java.util.List;
 
+import edu.byu.cs.tweeter.client.model.service.AuthenticatedObserver;
+import edu.byu.cs.tweeter.client.model.service.FollowObserver;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
+import edu.byu.cs.tweeter.client.model.service.ItemObserver;
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
@@ -63,7 +66,7 @@ public class GetFollowersPresenter {
     }
     //
 
-    private class GetFollowersObserver implements FollowService.Observer {
+    private class GetFollowersObserver implements ItemObserver<User> {
         @Override
         public void displayError(String message) {
             isLoading = false;
@@ -87,32 +90,12 @@ public class GetFollowersPresenter {
             view.setLoadingFooter(false);
             view.addMoreItems(followers);
         }
-
-        @Override
-        public void updateFollowersCount(int count) {
-            // don't need
-        }
-
-        @Override
-        public void updateFollowingCount(int count) {
-            // don't need
-        }
-
-        @Override
-        public void setFollowers(boolean isFollower) {
-            // don't need
-        }
-
-        @Override
-        public void updateFollowButton(boolean val) {
-            // don't need
-        }
     }
 
-    private class GetUserObserver implements UserService.Observer {
+    private class GetUserObserver implements AuthenticatedObserver {
 
         @Override
-        public void handleSuccess(User user, AuthToken authToken) {
+        public void postStatus(User user, AuthToken authToken) {
             view.getUser(user);
         }
 

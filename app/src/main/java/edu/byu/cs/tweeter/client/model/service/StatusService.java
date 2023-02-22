@@ -6,8 +6,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFeedTask;
@@ -20,25 +18,21 @@ import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
 public class StatusService extends BackgroundService {
-    public interface Observer extends BackgroundObserver{
-        void addItems(List<Status> items, boolean hasMorePages);
-        void postStatus();
-    }
 
-    public void loadMoreFeeds(User user, int pageSize, Status lastStatus, Observer observer) {
+    public void loadMoreFeeds(User user, int pageSize, Status lastStatus, ItemObserver<Status> observer) {
         GetFeedTask getFeedTask = new GetFeedTask(Cache.getInstance().getCurrUserAuthToken(),
                 user, pageSize, lastStatus, new GetFeedHandler(observer));
         runExecutor(getFeedTask);
 
     }
 
-    public void loadMoreStories(User user, int pageSize, Status lastStatus, Observer observer) {
+    public void loadMoreStories(User user, int pageSize, Status lastStatus, ItemObserver<Status> observer) {
         GetStoryTask getStoryTask = new GetStoryTask(Cache.getInstance().getCurrUserAuthToken(),
                 user, pageSize, lastStatus, new GetStoryHandler(observer));
         runExecutor(getStoryTask);
     }
 
-    public void executeStatusTask(String post, Observer observer) throws ParseException {
+    public void executeStatusTask(String post, SimpleObserver observer) throws ParseException {
         String dateTime = getFormattedDateTime();
         Status newStatus = new Status(post, Cache.getInstance().getCurrUser(), dateTime, parseURLs(post), parseMentions(post));
         PostStatusTask statusTask = new PostStatusTask(Cache.getInstance().getCurrUserAuthToken(),

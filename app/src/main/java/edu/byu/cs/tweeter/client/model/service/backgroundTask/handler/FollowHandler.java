@@ -6,6 +6,7 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
+import edu.byu.cs.tweeter.client.model.service.FollowObserver;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -15,7 +16,7 @@ public class FollowHandler extends FollowStatusHandler {
     private User selectedUser;
     private FollowService followService;
 
-    public FollowHandler(FollowService.Observer observer, User selectedUser) {
+    public FollowHandler(FollowObserver observer, User selectedUser) {
         super(observer, selectedUser);
     }
 

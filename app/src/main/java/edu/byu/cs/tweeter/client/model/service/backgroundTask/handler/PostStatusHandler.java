@@ -6,17 +6,18 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
+import edu.byu.cs.tweeter.client.model.service.SimpleObserver;
 import edu.byu.cs.tweeter.client.model.service.StatusService;
 
-public class PostStatusHandler extends BackgroundHandler<StatusService.Observer> {
+public class PostStatusHandler extends BackgroundHandler<SimpleObserver> {
     private static final String TASK_KEY = "post";
 
-    public PostStatusHandler(StatusService.Observer observer) {
+    public PostStatusHandler(SimpleObserver observer) {
         super(observer);
     }
 
     @Override
     protected void handleSuccess(@NonNull Message msg) {
-        getObserver().postStatus();
+        getObserver().handleSuccess();
     }
 }

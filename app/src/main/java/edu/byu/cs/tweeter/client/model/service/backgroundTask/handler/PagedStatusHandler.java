@@ -6,13 +6,13 @@ import androidx.annotation.NonNull;
 
 import java.util.List;
 
-import edu.byu.cs.tweeter.client.model.service.StatusService;
+import edu.byu.cs.tweeter.client.model.service.ItemObserver;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.PagedTask;
 import edu.byu.cs.tweeter.model.domain.Status;
 
-public class PagedStatusHandler extends PagedHandler<StatusService.Observer> {
+public class PagedStatusHandler extends PagedHandler<ItemObserver<Status>> {
 
-    public PagedStatusHandler(StatusService.Observer observer) {
+    public PagedStatusHandler(ItemObserver<Status> observer) {
         super(observer);
     }
 

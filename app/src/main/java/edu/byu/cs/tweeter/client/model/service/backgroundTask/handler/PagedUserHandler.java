@@ -6,14 +6,15 @@ import androidx.annotation.NonNull;
 
 import java.util.List;
 
-import edu.byu.cs.tweeter.client.model.service.FollowService;
+import edu.byu.cs.tweeter.client.model.service.FollowObserver;
+import edu.byu.cs.tweeter.client.model.service.ItemObserver;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.PagedTask;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class PagedUserHandler extends PagedHandler<FollowService.Observer>{
+public class PagedUserHandler extends PagedHandler<ItemObserver>{
 
-    public PagedUserHandler(FollowService.Observer observer) {
-        super(observer);
+    public PagedUserHandler(ItemObserver observer) {
+        super(observer);    // fixme??
     }
 
     @Override

@@ -1,10 +1,12 @@
 package edu.byu.cs.tweeter.client.presenter;
 
+import edu.byu.cs.tweeter.client.model.service.AuthenticatedObserver;
+import edu.byu.cs.tweeter.client.model.service.SimpleObserver;
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class LoginPresenter implements UserService.Observer {
+public class LoginPresenter implements AuthenticatedObserver {
 
     public interface View {
 
@@ -46,7 +48,7 @@ public class LoginPresenter implements UserService.Observer {
     }
 
     @Override
-    public void handleSuccess(User user, AuthToken authToken) {
+    public void postStatus(User user, AuthToken authToken) {
         view.loginSuccessful(user, authToken);
     }
 

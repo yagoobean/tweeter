@@ -4,12 +4,13 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
+import edu.byu.cs.tweeter.client.model.service.FollowObserver;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetFollowersCountTask;
 
-public class GetFollowersCountHandler extends BackgroundHandler<FollowService.Observer> {
+public class GetFollowersCountHandler extends BackgroundHandler<FollowObserver> {
 
-    public GetFollowersCountHandler(FollowService.Observer observer) {
+    public GetFollowersCountHandler(FollowObserver observer) {
         super(observer);
     }
 

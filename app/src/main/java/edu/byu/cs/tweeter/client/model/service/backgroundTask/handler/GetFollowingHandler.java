@@ -1,10 +1,10 @@
 package edu.byu.cs.tweeter.client.model.service.backgroundTask.handler;
 
-import edu.byu.cs.tweeter.client.model.service.FollowService;
+import edu.byu.cs.tweeter.client.model.service.ItemObserver;
 
 public class GetFollowingHandler extends PagedUserHandler {
 
-    public GetFollowingHandler(FollowService.Observer observer) {
+    public GetFollowingHandler(ItemObserver observer) {
         super(observer);
     }
 

@@ -3,7 +3,11 @@ package edu.byu.cs.tweeter.client.presenter;
 import java.text.ParseException;
 import java.util.List;
 
+import edu.byu.cs.tweeter.client.model.service.AuthenticatedObserver;
+import edu.byu.cs.tweeter.client.model.service.BackgroundObserver;
+import edu.byu.cs.tweeter.client.model.service.FollowObserver;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
+import edu.byu.cs.tweeter.client.model.service.SimpleObserver;
 import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
@@ -57,7 +61,7 @@ public class MainActivityPresenter {
         userService.logout(new LogoutObserver());
     }
 
-    private class FollowObserver implements FollowService.Observer {
+    private class Observer implements BackgroundObserver {
 
         @Override
         public void displayError(String message) {
@@ -66,13 +70,11 @@ public class MainActivityPresenter {
 
         @Override
         public void displayException(Exception ex) {
-            view.displayMessage(EX_KEY + ex.getMessage());  
+            view.displayMessage(EX_KEY + ex.getMessage());
         }
+    }
 
-        @Override
-        public void addItems(List<User> items, boolean hasMorePages) {
-            // don't think I need this
-        }
+    private class FollowObserver extends Observer implements edu.byu.cs.tweeter.client.model.service.FollowObserver {
 
         @Override
         public void updateFollowersCount(int count) {
@@ -95,44 +97,21 @@ public class MainActivityPresenter {
         }
     }
 
-    private class LogoutObserver implements UserService.Observer {
+    private class LogoutObserver extends Observer implements SimpleObserver {
+        private static final String TASK_KEY = "logout";    // todo check
 
         @Override
-        public void handleSuccess(User user, AuthToken authToken) {
+        public void handleSuccess() {
             view.logOut();
         }
 
-        @Override
-        public void displayError(String message) {
-            view.displayMessage(message);
-        }
-
-        @Override
-        public void displayException(Exception ex) {
-            view.displayMessage("Failed to logout because of exception: " + ex.getMessage());
-        }
     }
 
-    private class StatusObserver implements StatusService.Observer {
-        private static final String TASK_KEY = "post status";
+    private class StatusObserver extends Observer implements SimpleObserver {
+        private static final String TASK_KEY = "post status";   // todo check
 
         @Override
-        public void displayError(String message) {
-            view.displayMessage(message);
-        }
-
-        @Override
-        public void displayException(Exception ex) {
-            view.displayMessage("Failed to " + TASK_KEY + " because of exception: " + ex.getMessage());
-        }
-
-        @Override
-        public void addItems(List<Status> items, boolean hasMorePages) {
-            // NOT NEEDED
-        }
-
-        @Override
-        public void postStatus() {
+        public void handleSuccess() {
             view.postStatus();
         }
     }

@@ -4,13 +4,14 @@ import android.os.Message;
 
 import androidx.annotation.NonNull;
 
+import edu.byu.cs.tweeter.client.model.service.FollowObserver;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.IsFollowerTask;
 
-public class IsFollowerHandler extends BackgroundHandler<FollowService.Observer> {
+public class IsFollowerHandler extends BackgroundHandler<FollowObserver> {
     private static final String TASK_KEY =  "determine following relationship";
 
-    public IsFollowerHandler(FollowService.Observer observer) {
+    public IsFollowerHandler(FollowObserver observer) {
         super(observer);
     }
 

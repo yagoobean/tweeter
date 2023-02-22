@@ -2,6 +2,9 @@ package edu.byu.cs.tweeter.client.presenter;
 
 import java.util.List;
 
+import edu.byu.cs.tweeter.client.model.service.AuthenticatedObserver;
+import edu.byu.cs.tweeter.client.model.service.BackgroundObserver;
+import edu.byu.cs.tweeter.client.model.service.ItemObserver;
 import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.model.domain.AuthToken;
@@ -62,20 +65,29 @@ public class GetStoryPresenter {
 
     //
 
-    public class GetStoryObserver implements StatusService.Observer {
+    private abstract class Observer implements BackgroundObserver {
+        protected abstract void extra();
 
         @Override
         public void displayError(String message) {
-            isLoading = false;
-            view.setLoadingFooter(isLoading);
+            extra();
             view.displayMessage(message);
         }
 
         @Override
-        public void displayException(Exception ex) {
+        public void displayException(Exception exception) {
+            extra();
+            view.displayMessage(EX_KEY + exception.getMessage());
+        }
+    }
+
+    public class GetStoryObserver extends Observer implements ItemObserver<Status> {
+        private static final String TASK_KEY = "get story";
+
+        @Override
+        protected void extra() {
             isLoading = false;
             view.setLoadingFooter(isLoading);
-            view.displayMessage("Failed to get story because of exception: " + ex.getMessage());
 
         }
 
@@ -88,28 +100,19 @@ public class GetStoryPresenter {
             view.setLoadingFooter(isLoading);
             view.addMoreItems(statuses);
         }
-
-        @Override
-        public void postStatus() {
-            // not needed
-        }
     }
 
-    private class GetUserObserver implements UserService.Observer {
+    private class GetUserObserver extends Observer implements AuthenticatedObserver {
+        private static final String TASK_KEY = "get user's profile";
 
         @Override
-        public void handleSuccess(User user, AuthToken authToken) {
+        public void postStatus(User user, AuthToken authToken) {
             view.getUser(user);
         }
 
         @Override
-        public void displayError(String message) {
-            view.displayMessage(message);
-        }
-
-        @Override
-        public void displayException(Exception exception) {
-            view.displayMessage("Failed to get user's profile because of exception: " + exception.getMessage());
+        protected void extra() {
+            // leave empty
         }
     }
 }

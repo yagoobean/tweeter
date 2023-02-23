@@ -7,11 +7,13 @@ import androidx.annotation.NonNull;
 import edu.byu.cs.tweeter.client.model.service.AuthenticatedObserver;
 import edu.byu.cs.tweeter.client.model.service.UserService;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.GetUserTask;
+import edu.byu.cs.tweeter.client.presenter.GetFeedPresenter;
+import edu.byu.cs.tweeter.client.presenter.PagedPresenter;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class GetUserHandler extends BackgroundHandler<AuthenticatedObserver> {
+public class GetUserHandler extends BackgroundHandler<PagedPresenter.GetUserObserver> {
 
-    public GetUserHandler(AuthenticatedObserver observer) {
+    public GetUserHandler(GetFeedPresenter.GetUserObserver observer) {
         super(observer);
     }
 

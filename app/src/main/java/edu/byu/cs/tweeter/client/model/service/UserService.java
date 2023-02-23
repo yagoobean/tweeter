@@ -9,6 +9,9 @@ import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.GetUserHan
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.LoginHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.LogoutHandler;
 import edu.byu.cs.tweeter.client.model.service.backgroundTask.handler.RegisterHandler;
+import edu.byu.cs.tweeter.client.presenter.GetFeedPresenter;
+import edu.byu.cs.tweeter.client.presenter.PagedPresenter;
+import edu.byu.cs.tweeter.model.domain.User;
 
 public class UserService extends BackgroundService {
     // private static Fragment fragment;
@@ -32,7 +35,7 @@ public class UserService extends BackgroundService {
         runExecutor(registerTask);
     }
 
-    public void executeUserTask(String userAlias, AuthenticatedObserver observer) {
+    public void executeUserTask(String userAlias, PagedPresenter.GetUserObserver observer) {
         GetUserTask getUserTask = new GetUserTask(Cache.getInstance().getCurrUserAuthToken(),
                 userAlias, new GetUserHandler(observer));
         runExecutor(getUserTask);

@@ -131,4 +131,9 @@ public class RegisterFragment extends Fragment implements RegisterPresenter.View
             System.out.println(e.getMessage());
         }
     }
+
+    @Override
+    public void displayMessage(String message) {
+        // fixme
+    }
 }

@@ -14,8 +14,8 @@ import edu.byu.cs.tweeter.model.domain.AuthToken;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
-public class MainActivityPresenter {
-    public interface View {
+public class MainActivityPresenter extends BackgroundPresenter<MainActivityPresenter.View>  {
+    public interface View extends BackgroundView {
         void updateFollowersCount(int count);
         void updateFollowingCount(int count);
         void displayMessage(String message);
@@ -25,13 +25,12 @@ public class MainActivityPresenter {
         void postStatus();
     }
 
-    private View view;
     private FollowService followService;
     private UserService userService;
     private StatusService statusService;
 
     public MainActivityPresenter(View view) {
-        this.view = view;
+        super(view);
         this.followService = new FollowService();
         this.userService = new UserService();
         this.statusService = new StatusService();
@@ -61,20 +60,7 @@ public class MainActivityPresenter {
         userService.logout(new LogoutObserver());
     }
 
-    private class Observer implements BackgroundObserver {
-
-        @Override
-        public void displayError(String message) {
-            view.displayMessage(message);
-        }
-
-        @Override
-        public void displayException(Exception ex) {
-            view.displayMessage(EX_KEY + ex.getMessage());
-        }
-    }
-
-    private class FollowObserver extends Observer implements edu.byu.cs.tweeter.client.model.service.FollowObserver {
+    private class FollowObserver extends BaseObserver implements edu.byu.cs.tweeter.client.model.service.FollowObserver {
 
         @Override
         public void updateFollowersCount(int count) {
@@ -95,24 +81,51 @@ public class MainActivityPresenter {
         public void updateFollowButton(boolean val) {
             view.updateFollowButton(val);
         }
+
+        @Override
+        public String getTaskName() {
+            return "update follower/following count";   // fixme
+        }
+
+        @Override
+        protected void extra() {
+            // none
+        }
     }
 
-    private class LogoutObserver extends Observer implements SimpleObserver {
-        private static final String TASK_KEY = "logout";    // todo check
+    private class LogoutObserver extends BaseObserver implements SimpleObserver {
 
         @Override
         public void handleSuccess() {
             view.logOut();
         }
 
+        @Override
+        public String getTaskName() {
+            return "logout";
+        }
+
+        @Override
+        protected void extra() {
+            // none
+        }
     }
 
-    private class StatusObserver extends Observer implements SimpleObserver {
-        private static final String TASK_KEY = "post status";   // todo check
+    private class StatusObserver extends BaseObserver implements SimpleObserver {
 
         @Override
         public void handleSuccess() {
             view.postStatus();
+        }
+
+        @Override
+        public String getTaskName() {
+            return "post status";
+        }
+
+        @Override
+        protected void extra() {
+            // none
         }
     }
 }

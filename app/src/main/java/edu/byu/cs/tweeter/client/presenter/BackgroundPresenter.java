@@ -11,14 +11,19 @@ public abstract class BackgroundPresenter<T extends BackgroundView> {
     }
 
     public abstract class BaseObserver implements BackgroundObserver {
+
+        protected abstract void extra();
+
         @Override
         public void displayError(String message) {
-            // TODO
+            extra();
+            view.displayMessage(message);
         }
 
         @Override
         public void displayException(Exception ex) {
-            // TODO
+            extra();
+            view.displayMessage("Failed to " + getTaskName() + " because of exception: " + ex.getMessage());
         }
     }
 

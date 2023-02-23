@@ -13,9 +13,11 @@ public abstract class PagedPresenter<T> extends BackgroundPresenter<PagedPresent
         this.userService = new UserService();
     }
 
-    // User targetUser;
-    // AuthToken authToken;
-    // boolean isGettingUser;
+    // GETTERS AND SETTERS
+    public boolean isLoading() {
+        return isLoading;
+    }
+
     public interface PagedView<U> extends BackgroundView {
 
         void setLoadingFooter(boolean isLoading);
@@ -29,32 +31,14 @@ public abstract class PagedPresenter<T> extends BackgroundPresenter<PagedPresent
     protected boolean hasMorePages;
     protected boolean isLoading = false;
 
-    // protected abstract void getItems(AuthToken authToken, User targetUser, int pageSize, T lastItem);
-    // protected abstract String getDescription();
-
-    // public void loadMoreItems();
-    // public void getUser(String alias);
-
-
-    public void setHasMorePages(boolean hasMorePages) {
-        this.hasMorePages = hasMorePages;
+    public void executeUserTask(String userAlias) {
+        userService.executeUserTask(userAlias, new GetUserObserver());
     }
 
-    public abstract class PagedObserver implements ItemObserver<T> {
-        protected abstract String getTaskName();
-        protected abstract void extra();
+    public boolean hasMorePages() { return hasMorePages; }
+    public void setHasMorePages(boolean hasMorePages) { this.hasMorePages = hasMorePages; }
 
-        @Override
-        public void displayError(String message) {
-            extra();
-            view.displayMessage(message);
-        }
-
-        @Override
-        public void displayException(Exception exception) {
-            extra();
-            view.displayMessage("Failed to " + getTaskName() + " because of exception: " + exception.getMessage());
-        }
+    public abstract class PagedObserver extends BaseObserver implements ItemObserver<T> {
 
         @Override
         public void addItems(List<T> items, boolean hasMorePages) {
@@ -73,7 +57,7 @@ public abstract class PagedPresenter<T> extends BackgroundPresenter<PagedPresent
 
     public class GetUserObserver extends PagedObserver {
         @Override
-        protected String getTaskName() {
+        public String getTaskName() {
             return "get user's profile";
         }
 

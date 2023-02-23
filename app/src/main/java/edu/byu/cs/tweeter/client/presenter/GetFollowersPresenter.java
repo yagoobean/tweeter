@@ -14,7 +14,6 @@ public class GetFollowersPresenter extends PagedPresenter<User> {
     public interface View extends PagedView<User> {
         void addMoreItems(List<User> followers);
         void getUser(User user);
-
     }
 
     private FollowService followService;
@@ -32,26 +31,9 @@ public class GetFollowersPresenter extends PagedPresenter<User> {
         }
     }
 
-    public void executeUserTask(String userAlias) {
-        userService.executeUserTask(userAlias, new GetUserObserver());
-    }
-
-
-    // GETTERS AND SETTERS
-    public boolean isLoading() {
-        return isLoading;
-    }
-    public boolean hasMorePages() {
-        return hasMorePages;
-    }
-    public void setHasMorePages(boolean hasMorePages) {
-        this.hasMorePages = hasMorePages;
-    }
-    //
-
     private class GetFollowersObserver extends PagedObserver {
         @Override
-        protected String getTaskName() {
+        public String getTaskName() {
             return "get followers";
         }
 

@@ -32,26 +32,10 @@ public class GetStoryPresenter extends PagedPresenter<Status> {
         }
     }
 
-    public void executeUserTask(String userAlias) {
-        userService.executeUserTask(userAlias, new GetUserObserver());
-    }
-
-    // GETTERS AND SETTERS
-    public boolean isLoading() {
-        return isLoading;
-    }
-    public boolean hasMorePages() {
-        return hasMorePages;
-    }
-    public void setHasMorePages(boolean hasMorePages) {
-        this.hasMorePages = hasMorePages;
-    }
-    //
-
     public class GetStoryObserver extends PagedObserver {
 
         @Override
-        protected String getTaskName() {
+        public String getTaskName() {
             return "get story";
         }
 

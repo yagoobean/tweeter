@@ -18,18 +18,6 @@ public class GetFollowingPresenter extends PagedPresenter<User> {
 
     private FollowService followService;
 
-    public boolean hasMorePages() {
-        return hasMorePages;
-    }
-
-    public void setHasMorePages(boolean hasMorePages) {
-        this.hasMorePages = hasMorePages;
-    }
-
-    public boolean isLoading() {
-        return isLoading;
-    }
-
     public GetFollowingPresenter(View view) {
         super(view);
         this.followService = new FollowService();
@@ -43,13 +31,9 @@ public class GetFollowingPresenter extends PagedPresenter<User> {
         }
     }
 
-    public void executeUserTask(String userAlias) {
-        userService.executeUserTask(userAlias, new GetUserObserver());
-    }
-
     public class GetFollowingObserver extends PagedObserver {
         @Override
-        protected String getTaskName() {
+        public String getTaskName() {
             return "get following";
         }
 

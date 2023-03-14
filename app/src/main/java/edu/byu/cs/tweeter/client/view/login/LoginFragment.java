@@ -84,6 +84,7 @@ public class LoginFragment extends Fragment implements LoginPresenter.View {
 
         Toast.makeText(getContext(), "Hello " + Cache.getInstance().getCurrUser().getName(),
                 Toast.LENGTH_LONG).show();
+        System.out.println("Hello " + Cache.getInstance().getCurrUser().getName());
         startActivity(intent);
     }
 

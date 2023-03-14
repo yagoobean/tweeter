@@ -33,7 +33,14 @@ public class MainActivityPresenter extends BackgroundPresenter<MainActivityPrese
         super(view);
         this.followService = new FollowService();
         this.userService = new UserService();
-        this.statusService = new StatusService();
+        this.statusService = getStatusService();
+    }
+
+    public StatusService getStatusService() {
+        if (statusService == null) {
+            statusService = new StatusService();
+        }
+        return statusService;
     }
 
     public void updateSelectedUserFollowingAndFollowers(User selectedUser) {
@@ -52,8 +59,8 @@ public class MainActivityPresenter extends BackgroundPresenter<MainActivityPrese
         followService.executeUnfollowTask(selectedUser, new FollowObserver());
     }
 
-    public void executeStatusTask(String post) throws ParseException {
-        statusService.executeStatusTask(post, new StatusObserver());
+    public void executeStatusTask(String post) {
+        getStatusService().executeStatusTask(post, new StatusObserver());
     }
 
     public void logOut() {
@@ -111,7 +118,7 @@ public class MainActivityPresenter extends BackgroundPresenter<MainActivityPrese
         }
     }
 
-    private class StatusObserver extends BaseObserver implements SimpleObserver {
+    public class StatusObserver extends BaseObserver implements SimpleObserver {
 
         @Override
         public void handleSuccess() {

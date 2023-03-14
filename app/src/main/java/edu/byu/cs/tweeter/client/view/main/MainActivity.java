@@ -19,11 +19,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.squareup.picasso.Picasso;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalTime;
-
 import edu.byu.cs.tweeter.R;
 import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.presenter.MainActivityPresenter;
@@ -112,9 +107,11 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
                 if (followButton.getText().toString().equals(v.getContext().getString(R.string.following))) {
                     presenter.executeUnfollowTask(selectedUser);
                     Toast.makeText(MainActivity.this, "Removing " + selectedUser.getName() + "...", Toast.LENGTH_LONG).show();
+                    System.out.println("Removing " + selectedUser.getName() + "...");
                 } else {
                     presenter.executeFollowTask(selectedUser);
                     Toast.makeText(MainActivity.this, "Adding " + selectedUser.getName() + "...", Toast.LENGTH_LONG).show();
+                    System.out.println("Adding " + selectedUser.getName() + "...");
                 }
             }
         });
@@ -131,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.logoutMenu) {
             logOutToast = Toast.makeText(this, "Logging Out...", Toast.LENGTH_LONG);
+            System.out.println("Logging Out...");
             logOutToast.show();
 
             presenter.logOut();
@@ -154,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
     @Override
     public void onStatusPosted(String post) {
         postingToast = Toast.makeText(this, "Posting Status...", Toast.LENGTH_LONG);
+        System.out.println("Posting Status...");
         postingToast.show();
 
         try {
@@ -161,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
         } catch (Exception ex) {
             Log.e(LOG_TAG, ex.getMessage(), ex);
             Toast.makeText(this, "Failed to post the status because of exception: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+            System.out.println("Failed to post the status because of exception: " + ex.getMessage());
         }
     }
 
@@ -182,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
     public void postStatus() {
         postingToast.cancel();
         Toast.makeText(MainActivity.this, "Successfully Posted!", Toast.LENGTH_LONG).show();
+        System.out.println("Successfully Posted!");
     }
 
     @Override
@@ -197,6 +198,7 @@ public class MainActivity extends AppCompatActivity implements StatusDialogFragm
     @Override
     public void displayMessage(String message) {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+        System.out.println(message);
     }
 
     @Override

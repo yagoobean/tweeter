@@ -32,7 +32,7 @@ public class StatusService extends BackgroundService {
         runExecutor(getStoryTask);
     }
 
-    public void executeStatusTask(String post, SimpleObserver observer) throws ParseException {
+    public void executeStatusTask(String post, SimpleObserver observer) {
         String dateTime = getFormattedDateTime();
         Status newStatus = new Status(post, Cache.getInstance().getCurrUser(), dateTime, parseURLs(post), parseMentions(post));
         PostStatusTask statusTask = new PostStatusTask(Cache.getInstance().getCurrUserAuthToken(),
@@ -40,11 +40,16 @@ public class StatusService extends BackgroundService {
         runExecutor(statusTask);
     }
 
-    public String getFormattedDateTime() throws ParseException {
+    public String getFormattedDateTime() {
         SimpleDateFormat userFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         SimpleDateFormat statusFormat = new SimpleDateFormat("MMM d yyyy h:mm aaa");
 
-        return statusFormat.format(userFormat.parse(LocalDate.now().toString() + " " + LocalTime.now().toString().substring(0, 8)));
+        try {
+            return statusFormat.format(userFormat.parse(LocalDate.now().toString() + " " + LocalTime.now().toString().substring(0, 8)));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "help";
+        }
     }
 
     public List<String> parseURLs(String post) {
@@ -63,7 +68,7 @@ public class StatusService extends BackgroundService {
         return containedUrls;
     }
 
-    public int findUrlEndIndex(String word) {
+    private int findUrlEndIndex(String word) {
         if (word.contains(".com")) {
             int index = word.indexOf(".com");
             index += 4;
